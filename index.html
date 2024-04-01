@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-image: url('https://images.pexels.com/photos/956999/milky-way-starry-sky-night-sky-star-956999.jpeg?auto=compress&cs=tinysrgb&w=600');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .stopwatch {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .display {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .laps {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <div class="stopwatch">
+    <div class="display">00:00:00</div>
+    <button class="start">Start</button>
+    <button class="pause">Pause</button>
+    <button class="reset">Reset</button>
+    <button class="lap">Lap</button>
+    <ul class="laps"></ul>
+  </div>
+
+  <script>
+    const display = document.querySelector('.display');
+    const startBtn = document.querySelector('.start');
+    const pauseBtn = document.querySelector('.pause');
+    const resetBtn = document.querySelector('.reset');
+    const lapBtn = document.querySelector('.lap');
+    const lapsList = document.querySelector('.laps');
+
+    let startTime;
+    let elapsedTime = 0;
+    let timerInterval;
+    let laps = [];
+
+    function formatTime(ms) {
+      const date = new Date(ms);
+      const hours = String(date.getUTCHours()).padStart(2, '0');
+      const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+      const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+      const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
+      return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+    }
+
+    function print(displayTime) {
+      display.textContent = displayTime;
+    }
+
+    function startTimer() {
+      startTime = Date.now() - elapsedTime;
+      timerInterval = setInterval(function() {
+        elapsedTime = Date.now() - startTime;
+        print(formatTime(elapsedTime));
+      }, 10);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      elapsedTime = 0;
+      print(formatTime(elapsedTime));
+      laps = [];
+      lapsList.innerHTML = '';
+    }
+
+    function lapTimer() {
+      laps.push(formatTime(elapsedTime));
+      const lapItem = document.createElement('li');
+      lapItem.textContent = `Lap ${laps.length}: ${laps[laps.length - 1]}`;
+      lapsList.appendChild(lapItem);
+    }
+
+    startBtn.addEventListener('click', startTimer);
+    pauseBtn.addEventListener('click', pauseTimer);
+    resetBtn.addEventListener('click', resetTimer);
+    lapBtn.addEventListener('click', lapTimer);
+  </script>
+</body>
+</html>
